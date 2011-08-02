@@ -1,0 +1,10 @@
+name: SignRank
+main: me.coolblinger.signrank.SignRank
+autthor: coolblinger
+version: 0.1DEV
+description: >
+  A plugin that ranks up people after interacting with a sign
+permissions:
+   signrank.build:
+      description: Create SignRank signs
+      default: op
