@@ -10,6 +10,11 @@
 
 ## Changelog:
 
+__1.0.1__
+
+> -   Removed some debug messages still present
+-   Fixed the creation of SignRank signs
+
 __1.0__
 
 > -   Initial release

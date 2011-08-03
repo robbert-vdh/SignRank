@@ -22,14 +22,13 @@ public class SignRankBlockListener extends BlockListener {
 	public void onSignChange (SignChangeEvent event) {
 		if (event.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
 			Player player = event.getPlayer();
-			if (!player.hasPermission("signrank.build") || !plugin.permissions.has(player, "signrank.build")) {
+			if (player.hasPermission("signrank.build") || plugin.permissions.has(player, "signrank.build")) {
+
+			} else {
 				player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
 				event.getBlock().setType(Material.AIR);
 				event.setCancelled(true);
 			}
-		} else {
-			plugin.log.warning("'" + event.getLine(0) + "'");
-			plugin.log.warning("'" + plugin.signRankConfig.getString("signText") + "'");
 		}
 	}
 
@@ -40,7 +39,9 @@ public class SignRankBlockListener extends BlockListener {
 			Sign eventSign = (Sign)eventBlockState;
 			if (eventSign.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
 				Player player = event.getPlayer();
-				if (!player.hasPermission("signrank.build") || !plugin.permissions.has(player, "signrank.build")) {
+				if (player.hasPermission("signrank.build") || plugin.permissions.has(player, "signrank.build")) {
+					
+				} else {
 					player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
 					event.setCancelled(true);
 				}
