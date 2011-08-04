@@ -61,6 +61,11 @@ public class SignRank extends JavaPlugin{
 		pm.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Normal, this);
 		log.info(pdFile.getName() + " version " + pdFile.getVersion() + " loaded!");
+		try {
+			updateCheck();
+		} catch (Exception e) {
+			log.severe("SignRank could not check for updates.");
+		}
 	}
 
 	public void updateCheck() throws IOException {
