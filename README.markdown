@@ -10,6 +10,10 @@
 
 ## Changelog:
 
+__1.1.2__
+
+> -   I forgot to call the update check
+
 __1.1.1__
 
 > -   Fixed a critical flaw
