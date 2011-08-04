@@ -10,6 +10,11 @@
 
 ## Changelog:
 
+__1.1.1__
+
+> -   Fixed a critical flaw
+-   Added an update check
+
 __1.1__
 
 > -   Added the ability to specify the group name on the second line of the sign, and ignore the rank check.

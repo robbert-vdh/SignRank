@@ -22,7 +22,8 @@ public class SignRankBlockListener extends BlockListener {
 	public void onSignChange (SignChangeEvent event) {
 		if (event.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
 			Player player = event.getPlayer();
-			if (player.hasPermission("signrank.build") || plugin.permissions.has(player, "signrank.build")) {
+			if (plugin.permissions3)
+			if (plugin.hasPermission(player, "signrank.build")) {
 
 			} else {
 				player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
@@ -39,7 +40,7 @@ public class SignRankBlockListener extends BlockListener {
 			Sign eventSign = (Sign)eventBlockState;
 			if (eventSign.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
 				Player player = event.getPlayer();
-				if (player.hasPermission("signrank.build") || plugin.permissions.has(player, "signrank.build")) {
+				if (plugin.hasPermission(player, "signrank.build")) {
 					
 				} else {
 					player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
