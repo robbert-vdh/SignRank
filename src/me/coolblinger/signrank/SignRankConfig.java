@@ -29,6 +29,12 @@ public class SignRankConfig {
 		return config.getString(path);
 	}
 
+	public boolean getBoolean(String path) {
+		Configuration config = config();
+		config.load();
+		return config.getBoolean(path, false);
+	}
+
 	@SuppressWarnings({"ResultOfMethodCallIgnored"})
 	public void initConfig() {
 		configFile.getParentFile().mkdir();
@@ -41,7 +47,9 @@ public class SignRankConfig {
 		}
 
 		Configuration config = config();
-		config.setHeader("#'signText' is the text that has to be on the first line of the sign to in order for it to be a SignRankSign.\n#You have to manually set the groups for every world when using Permissions3.");
+		config.setHeader("#'signText' is the text that has to be on the first line of the sign to in order for it to be a SignRankSign.\n" +
+				"#You have to manually set the groups for every world when using Permissions3.\n" +
+				"#Those groups are ignored when 'bypassGroupCheck' is true, players will then be promoted to the group specified on the second line of the sign.");
 		if (config.getProperty("PermissionsBukkit.toGroup") == null) {
 			config.setProperty("PermissionsBukkit.toGroup", "user");
 			config.setProperty("Permissions3.worldName", "groupName");
@@ -49,6 +57,10 @@ public class SignRankConfig {
 		}
 		if (config.getProperty("signText") == null) {
 			config.setProperty("signText", "[SignRank]");
+			config.save();
+		}
+		if (config.getProperty("bypassGroupCheck") == null) {
+			config.setProperty("bypassGroupCheck", false);
 			config.save();
 		}
 		if (config.getProperty("messages.rankUp") == null) {

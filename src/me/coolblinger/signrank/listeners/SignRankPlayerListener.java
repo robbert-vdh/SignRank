@@ -18,7 +18,8 @@ import java.util.List;
 
 public class SignRankPlayerListener extends PlayerListener {
 	SignRank plugin;
-	public SignRankPlayerListener (SignRank instance) {
+
+	public SignRankPlayerListener(SignRank instance) {
 		plugin = instance;
 	}
 
@@ -32,27 +33,44 @@ public class SignRankPlayerListener extends PlayerListener {
 				if (eventSign.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
 					if (!plugin.permissions3) {
 						List<String> groups = plugin.signRankPermissionsBukkitYML.getGroups(player);
-						if (groups.contains("default")) {
-							plugin.signRankPermissionsBukkitYML.changeGroup(player, "default", plugin.signRankConfig.getString("PermissionsBukkit.toGroup"));
-							String rankUp = plugin.signRankConfig.getString("messages.rankUp").replace("%group%", plugin.signRankConfig.getString("PermissionsBukkit.toGroup"));
+						if (plugin.signRankConfig.getBoolean("bypassGroupCheck")) {
+							plugin.signRankPermissionsBukkitYML.changeGroup(player, eventSign.getLine(1));
+							String rankUp = plugin.signRankConfig.getString("messages.rankUp").replace("%group%", eventSign.getLine(1));
 							player.sendMessage(ChatColor.GREEN + rankUp);
 						} else {
-							String deny = plugin.signRankConfig.getString("messages.deny").replace("%group%", plugin.signRankConfig.getString("PermissionsBukkit.toGroup"));
-							player.sendMessage(ChatColor.RED + deny);
+							if (groups.contains("default")) {
+								plugin.signRankPermissionsBukkitYML.changeGroup(player, plugin.signRankConfig.getString("PermissionsBukkit.toGroup"));
+								String rankUp = plugin.signRankConfig.getString("messages.rankUp").replace("%group%", plugin.signRankConfig.getString("PermissionsBukkit.toGroup"));
+								player.sendMessage(ChatColor.GREEN + rankUp);
+							} else {
+								String deny = plugin.signRankConfig.getString("messages.deny").replace("%group%", plugin.signRankConfig.getString("PermissionsBukkit.toGroup"));
+								player.sendMessage(ChatColor.RED + deny);
+							}
 						}
 					} else {
 						User user = plugin.permissions.getUserObject(player.getWorld().getName(), player.getName());
-						if (plugin.signRankConfig.getString("Permissions3." + user.getWorld()) == null) {
-							player.sendMessage(ChatColor.RED + "SignRank has not been set up for this world.");
-						} else {
-							if (user.inGroup(user.getWorld(), plugin.permissions.getDefaultGroup(user.getWorld()).getName())) {
-								user.removeParent(plugin.permissions.getDefaultGroup(user.getWorld()));
-								user.addParent(plugin.permissions.getGroupObject(user.getWorld(), plugin.signRankConfig.getString("Permissions3." + user.getWorld())));
-								String rankUp = plugin.signRankConfig.getString("messages.rankUp").replace("%group%", plugin.signRankConfig.getString("Permissions3." + user.getWorld()));
+						if (plugin.signRankConfig.getBoolean("bypassGroupCheck")) {
+							if (plugin.permissions.getGroupObject(user.getWorld(), eventSign.getLine(1)) != null) {
+								user.removeParent(user.getPrimaryGroup());
+								user.addParent(plugin.permissions.getGroupObject(user.getWorld(), eventSign.getLine(1)));
+								String rankUp = plugin.signRankConfig.getString("messages.rankUp").replace("%group%", eventSign.getLine(1));
 								player.sendMessage(ChatColor.GREEN + rankUp);
 							} else {
-								String deny = plugin.signRankConfig.getString("messages.deny").replace("%group%", plugin.signRankConfig.getString("Permissions3." + user.getWorld()));
-								player.sendMessage(ChatColor.RED + deny);
+								player.sendMessage(ChatColor.RED + "The group '" + eventSign.getLine(1) + "' does not exist.");
+							}
+						} else {
+							if (plugin.signRankConfig.getString("Permissions3." + user.getWorld()) == null) {
+								player.sendMessage(ChatColor.RED + "SignRank has not been set up for this world.");
+							} else {
+								if (user.inGroup(user.getWorld(), plugin.permissions.getDefaultGroup(user.getWorld()).getName())) {
+									user.removeParent(plugin.permissions.getDefaultGroup(user.getWorld()));
+									user.addParent(plugin.permissions.getGroupObject(user.getWorld(), plugin.signRankConfig.getString("Permissions3." + user.getWorld())));
+									String rankUp = plugin.signRankConfig.getString("messages.rankUp").replace("%group%", plugin.signRankConfig.getString("Permissions3." + user.getWorld()));
+									player.sendMessage(ChatColor.GREEN + rankUp);
+								} else {
+									String deny = plugin.signRankConfig.getString("messages.deny").replace("%group%", plugin.signRankConfig.getString("Permissions3." + user.getWorld()));
+									player.sendMessage(ChatColor.RED + deny);
+								}
 							}
 						}
 					}

@@ -10,6 +10,11 @@
 
 ## Changelog:
 
+__1.1__
+
+> -   Added the ability to specify the groupname on the second line of the sign, and ignore the rankcheck.
+-   Added an option in the config to enable the above function.
+
 __1.0.1__
 
 > -   Removed some debug messages still present

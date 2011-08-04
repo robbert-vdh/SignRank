@@ -45,18 +45,15 @@ public class SignRankPermissionsBukkitYML {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void changeGroup(Player player, String from, String to) {
+	public void changeGroup(Player player, String to) {
 		Configuration config = config();
 		config.load();
-		List<String> groups = (List<String>)config.getProperty("users." + player.getName() + ".groups");
-		if (groups != null) {
-			groups.remove(from);
-		} else {
-			groups = new ArrayList<String>();
-		}
+		List<String> groups = new ArrayList<String>();
 		groups.add(to);
 		config.setProperty("users." + player.getName() + ".groups", groups);
 		config.save();
 		plugin.permissionsBukkit.reloadPermissions();
 	}
+
+
 }
