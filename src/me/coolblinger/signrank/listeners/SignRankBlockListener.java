@@ -1,7 +1,6 @@
 package me.coolblinger.signrank.listeners;
 
 import me.coolblinger.signrank.SignRank;
-import me.coolblinger.signrank.SignRankConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,12 +19,9 @@ public class SignRankBlockListener extends BlockListener {
 	}
 
 	public void onSignChange (SignChangeEvent event) {
-		if (event.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
+		if (event.getLine(0).equals(plugin.readString("signText"))) {
 			Player player = event.getPlayer();
-			if (plugin.permissions3)
-			if (plugin.hasPermission(player, "signrank.build")) {
-
-			} else {
+			if (!plugin.hasPermission(player, "signrank.build")) {
 				player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
 				event.getBlock().setType(Material.AIR);
 				event.setCancelled(true);
@@ -38,11 +34,9 @@ public class SignRankBlockListener extends BlockListener {
 		BlockState eventBlockState = eventBlock.getState();
 		if (eventBlockState instanceof Sign) {
 			Sign eventSign = (Sign)eventBlockState;
-			if (eventSign.getLine(0).equals(plugin.signRankConfig.getString("signText"))) {
+			if (eventSign.getLine(0).equals(plugin.readString("signText"))) {
 				Player player = event.getPlayer();
-				if (plugin.hasPermission(player, "signrank.build")) {
-					
-				} else {
+				if (!plugin.hasPermission(player, "signrank.build")) {
 					player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
 					event.setCancelled(true);
 				}
