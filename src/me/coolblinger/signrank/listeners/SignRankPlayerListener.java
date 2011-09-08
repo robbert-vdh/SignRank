@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerListener;
 import java.util.List;
 
 public class SignRankPlayerListener extends PlayerListener {
-	SignRank plugin;
+	private final SignRank plugin;
 
 	public SignRankPlayerListener(SignRank instance) {
 		plugin = instance;

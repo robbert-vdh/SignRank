@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SignRankPermissionsBukkitYML {
-	public File permissionsFile = new File("plugins" + File.separator + "PermissionsBukkit" + File.separator + "config.yml");
-	SignRank plugin;
+	private final File permissionsFile = new File("plugins" + File.separator + "PermissionsBukkit" + File.separator + "config.yml");
+	private final SignRank plugin;
 
 	public SignRankPermissionsBukkitYML (SignRank instance) {
 		plugin = instance;

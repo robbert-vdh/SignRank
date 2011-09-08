@@ -19,13 +19,13 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 public class SignRank extends JavaPlugin{
-	public Logger log = Logger.getLogger("Minecraft");
+	private final Logger log = Logger.getLogger("Minecraft");
 	public String pluginName;
 	public PermissionHandler permissions;
-	private SignRankPlayerListener playerListener = new SignRankPlayerListener(this);
-	private SignRankBlockListener blockListener = new SignRankBlockListener(this);
-	public SignRankPermissionsBukkit permissionsBukkit = new SignRankPermissionsBukkit();
-	public SignRankPermissionsBukkitYML signRankPermissionsBukkitYML = new SignRankPermissionsBukkitYML(this);
+	private final SignRankPlayerListener playerListener = new SignRankPlayerListener(this);
+	private final SignRankBlockListener blockListener = new SignRankBlockListener(this);
+	public final SignRankPermissionsBukkit permissionsBukkit = new SignRankPermissionsBukkit();
+	public final SignRankPermissionsBukkitYML signRankPermissionsBukkitYML = new SignRankPermissionsBukkitYML(this);
 
 	public void onDisable() {
 		log.info("SignRank has been disabled.");
@@ -58,9 +58,10 @@ public class SignRank extends JavaPlugin{
 		} catch (Exception e) {
 			log.severe("SignRank could not check for updates.");
 		}
+		initConfig();
 	}
 
-	public void updateCheck() throws IOException {
+	void updateCheck() throws IOException {
 		URL url = new URL("http://dl.dropbox.com/u/677732/uploads/SignRank.jar");
 		int urlSize = url.openConnection().getContentLength();
 		File pluginFile = getFile();
@@ -119,11 +120,11 @@ public class SignRank extends JavaPlugin{
 		return config.getBoolean(path, false);
 	}
 
-	public boolean hasPermission(Player player, String permission) {
+	public boolean hasPermission(Player player) {
 		if (pluginName.equals("Permissions3")) {
-			return permissions.has(player, permission);
+			return permissions.has(player, "signrank.build");
 		} else if (pluginName.equals("PermissionsBukkit")) {
-			return player.hasPermission(permission);
+			return player.hasPermission("signrank.build");
 		} else {
 			return false;
 		}

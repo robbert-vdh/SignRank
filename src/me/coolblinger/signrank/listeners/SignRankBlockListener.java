@@ -12,7 +12,7 @@ import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class SignRankBlockListener extends BlockListener {
-	SignRank plugin;
+	private final SignRank plugin;
 
 	public SignRankBlockListener (SignRank instance) {
 		plugin = instance;
@@ -21,7 +21,7 @@ public class SignRankBlockListener extends BlockListener {
 	public void onSignChange (SignChangeEvent event) {
 		if (event.getLine(0).equals(plugin.readString("signText"))) {
 			Player player = event.getPlayer();
-			if (!plugin.hasPermission(player, "signrank.build")) {
+			if (!plugin.hasPermission(player)) {
 				player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
 				event.getBlock().setType(Material.AIR);
 				event.setCancelled(true);
@@ -36,7 +36,7 @@ public class SignRankBlockListener extends BlockListener {
 			Sign eventSign = (Sign)eventBlockState;
 			if (eventSign.getLine(0).equals(plugin.readString("signText"))) {
 				Player player = event.getPlayer();
-				if (!plugin.hasPermission(player, "signrank.build")) {
+				if (!plugin.hasPermission(player)) {
 					player.sendMessage(ChatColor.RED + "You're not allowed to do this.");
 					event.setCancelled(true);
 				}
