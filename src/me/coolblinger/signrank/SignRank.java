@@ -107,7 +107,7 @@ public class SignRank extends JavaPlugin{
 	public void initConfig() {
 		Configuration config = getConfiguration();
 		config.setHeader("#'signText' is the text that has to be on the first line of the sign to in order for it to be a SignRankSign.\n" +
-				"#You have to manually set the groups for every world when using either Permissions3 or Groupmanager.\n" +
+				"#You have to manually set the groups for every world when using either Permissions3, Groupmanager or bPermissions.\n" +
 				"#Those groups are ignored when 'bypassGroupCheck' is true, players will then be promoted to the group specified on the second line of the sign.");
 		if (config.getProperty("PermissionsBukkit.toGroup") == null) {
 			config.setProperty("PermissionsBukkit.toGroup", "user");

@@ -10,6 +10,13 @@
 
 ## Changelog:
 
+__1.2__
+
+> -   Added support for the following plugins:
+ -   GroupManager
+ -   PermissionsEx
+ -   bPermissions
+
 __1.1.2__
 
 > -   I forgot to call the update check

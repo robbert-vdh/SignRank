@@ -11,9 +11,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.util.config.Configuration;
 import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 
+import java.io.File;
 import java.util.List;
 
 public class SignRankPlayerListener extends PlayerListener {
@@ -119,6 +121,34 @@ public class SignRankPlayerListener extends PlayerListener {
 									PermissionGroup group = plugin.pex.getGroup(plugin.readString("MultiWorld." + player.getWorld().getName()));
 									user.setGroups(new PermissionGroup[]{group});
 									String rankUp = plugin.readString("messages.rankUp").replace("%group%", group.getName());
+									player.sendMessage(ChatColor.GREEN + rankUp);
+								} else {
+									String deny = plugin.readString("messages.deny").replace("%group%", plugin.readString("MultiWorld." + player.getWorld().getName()));
+									player.sendMessage(ChatColor.RED + deny);
+								}
+							}
+						}
+					} else if (plugin.pluginName.equals("bPermissions")) {
+						//There is no easy way to retrieve the default group.
+						Configuration c = new Configuration(new File("plugins/bPermissions/worlds/" + player.getWorld().getName() + ".yml"));
+						c.load();
+						String defaultGroup = c.getString("default");
+						if (plugin.readBoolean("bypassGroupCheck")) {
+							for (String group:plugin.bp.getPermissionSet(player.getWorld()).getGroups(player)) {
+								plugin.bp.getPermissionSet(player.getWorld()).removeGroup(player, group);
+							}
+							plugin.bp.getPermissionSet(player.getWorld()).addGroup(player, eventSign.getLine(1));
+							String rankUp = plugin.readString("messages.rankUp").replace("%group%", eventSign.getLine(1));
+							player.sendMessage(ChatColor.GREEN + rankUp);
+						} else {
+							if (plugin.readString("MultiWorld." + player.getWorld().getName()) == null) {
+								player.sendMessage(ChatColor.RED + "SignRank has not been set up for this world.");
+							} else {
+								if (plugin.bp.getPermissionSet(player.getWorld()).getGroups(player).contains(defaultGroup)) {
+									String group = plugin.readString("MultiWorld." + player.getWorld().getName());
+									plugin.bp.getPermissionSet(player.getWorld()).addGroup(player, group);
+									plugin.bp.getPermissionSet(player.getWorld()).removeGroup(player, defaultGroup);
+									String rankUp = plugin.readString("messages.rankUp").replace("%group%", group);
 									player.sendMessage(ChatColor.GREEN + rankUp);
 								} else {
 									String deny = plugin.readString("messages.deny").replace("%group%", plugin.readString("MultiWorld." + player.getWorld().getName()));
