@@ -2,6 +2,7 @@ package me.coolblinger.signrank.listeners;
 
 import com.nijiko.permissions.User;
 import me.coolblinger.signrank.SignRank;
+import org.anjocaido.groupmanager.data.Group;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -10,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
+import ru.tehkode.permissions.PermissionGroup;
+import ru.tehkode.permissions.PermissionUser;
 
 import java.util.List;
 
@@ -44,28 +47,81 @@ public class SignRankPlayerListener extends PlayerListener {
 								player.sendMessage(ChatColor.RED + deny);
 							}
 						}
-					} else {
+					} else if (plugin.pluginName.equals("Permissions3")) {
 						User user = plugin.permissions.getUserObject(player.getWorld().getName(), player.getName());
 						if (plugin.readBoolean("bypassGroupCheck")) {
-							if (plugin.permissions.getGroupObject(user.getWorld(), eventSign.getLine(1)) != null) {
+							com.nijiko.permissions.Group group = plugin.permissions.getGroupObject(user.getWorld(), eventSign.getLine(1));
+							if (group != null) {
 								user.removeParent(user.getPrimaryGroup());
-								user.addParent(plugin.permissions.getGroupObject(user.getWorld(), eventSign.getLine(1)));
+								user.addParent(group);
 								String rankUp = plugin.readString("messages.rankUp").replace("%group%", eventSign.getLine(1));
 								player.sendMessage(ChatColor.GREEN + rankUp);
 							} else {
 								player.sendMessage(ChatColor.RED + "The group '" + eventSign.getLine(1) + "' does not exist.");
 							}
-						} else if (plugin.pluginName.equals("Permissions3")) {
-							if (plugin.readString("Permissions3." + user.getWorld()) == null) {
+						} else {
+							if (plugin.readString("MultiWorld." + player.getWorld().getName()) == null) {
 								player.sendMessage(ChatColor.RED + "SignRank has not been set up for this world.");
 							} else {
 								if (user.inGroup(user.getWorld(), plugin.permissions.getDefaultGroup(user.getWorld()).getName())) {
 									user.removeParent(plugin.permissions.getDefaultGroup(user.getWorld()));
-									user.addParent(plugin.permissions.getGroupObject(user.getWorld(), plugin.readString("Permissions3." + user.getWorld())));
-									String rankUp = plugin.readString("messages.rankUp").replace("%group%", plugin.readString("Permissions3." + user.getWorld()));
+									user.addParent(plugin.permissions.getGroupObject(user.getWorld(), plugin.readString("MultiWorld." + user.getWorld())));
+									String rankUp = plugin.readString("messages.rankUp").replace("%group%", plugin.readString("MultiWorld." + user.getWorld()));
 									player.sendMessage(ChatColor.GREEN + rankUp);
 								} else {
-									String deny = plugin.readString("messages.deny").replace("%group%", plugin.readString("Permissions3." + user.getWorld()));
+									String deny = plugin.readString("messages.deny").replace("%group%", plugin.readString("MultiWorld." + user.getWorld()));
+									player.sendMessage(ChatColor.RED + deny);
+								}
+							}
+						}
+					} else if (plugin.pluginName.equals("GroupManager")) { // GroupManager has the worst API ever.
+						org.anjocaido.groupmanager.data.User user = plugin.gm.getWorldsHolder().getWorldData(player).getUser(player.getName());
+						if (plugin.readBoolean("bypassGroupCheck")) {
+							Group group = plugin.gm.getWorldsHolder().getWorldData(player).getGroup(eventSign.getLine(1));
+							if (group != null) {
+								user.setGroup(group);
+								String rankUp = plugin.readString("messages.rankUp").replace("%group%", eventSign.getLine(1));
+								player.sendMessage(ChatColor.GREEN + rankUp);
+							} else {
+								player.sendMessage(ChatColor.RED + "The group '" + eventSign.getLine(1) + "' does not exist.");
+							}
+						} else { // I know I should have split this statement, but I was just wondering whether they could make it more complicated.
+							if (plugin.readString("MultiWorld." + player.getWorld().getName()) == null) {
+								player.sendMessage(ChatColor.RED + "SignRank has not been set up for this world.");
+							} else {
+								if (user.getGroup() == plugin.gm.getWorldsHolder().getWorldData(player).getDefaultGroup()) {
+									Group group = plugin.gm.getWorldsHolder().getWorldData(player).getGroup(plugin.readString("MultiWorld." + player.getWorld().getName()));
+									user.setGroup(group);
+									String rankUp = plugin.readString("messages.rankUp").replace("%group%", group.getName());
+									player.sendMessage(ChatColor.GREEN + rankUp);
+								} else {
+									String deny = plugin.readString("messages.deny").replace("%group%", plugin.readString("MultiWorld." + player.getWorld().getName()));
+									player.sendMessage(ChatColor.RED + deny);
+								}
+							}
+						}
+					} else if (plugin.pluginName.equals("PermissionsEx")) {
+						PermissionUser user = plugin.pex.getUser(player.getName());
+						if (plugin.readBoolean("bypassGroupCheck")) {
+							PermissionGroup group = plugin.pex.getGroup(eventSign.getLine(1));
+							if (group != null) {
+								user.setGroups(new PermissionGroup[]{group});
+								String rankUp = plugin.readString("messages.rankUp").replace("%group%", eventSign.getLine(1));
+								player.sendMessage(ChatColor.GREEN + rankUp);
+							} else {
+								player.sendMessage(ChatColor.RED + "The group '" + eventSign.getLine(1) + "' does not exist.");
+							}
+						} else {
+							if (plugin.readString("MultiWorld." + player.getWorld().getName()) == null) {
+								player.sendMessage(ChatColor.RED + "SignRank has not been set up for this world.");
+							} else {
+								if (user.inGroup(plugin.pex.getDefaultGroup(player.getWorld().getName()))) {
+									PermissionGroup group = plugin.pex.getGroup(plugin.readString("MultiWorld." + player.getWorld().getName()));
+									user.setGroups(new PermissionGroup[]{group});
+									String rankUp = plugin.readString("messages.rankUp").replace("%group%", group.getName());
+									player.sendMessage(ChatColor.GREEN + rankUp);
+								} else {
+									String deny = plugin.readString("messages.deny").replace("%group%", plugin.readString("MultiWorld." + player.getWorld().getName()));
 									player.sendMessage(ChatColor.RED + deny);
 								}
 							}

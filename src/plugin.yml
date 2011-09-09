@@ -1,7 +1,7 @@
 name: SignRank
 main: me.coolblinger.signrank.SignRank
 autthor: coolblinger
-version: 1.1.2
+version: 1.2 BETA
 description: >
   A plugin that ranks up people after interacting with a sign.
 permissions:

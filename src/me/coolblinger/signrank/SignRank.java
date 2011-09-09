@@ -2,8 +2,11 @@ package me.coolblinger.signrank;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.platymuus.bukkit.permissions.PermissionsPlugin;
+import de.bananaco.permissions.Permissions;
+import de.bananaco.permissions.worlds.WorldPermissionsManager;
 import me.coolblinger.signrank.listeners.SignRankBlockListener;
 import me.coolblinger.signrank.listeners.SignRankPlayerListener;
+import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -12,6 +15,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.config.Configuration;
+import ru.tehkode.permissions.PermissionManager;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +27,9 @@ public class SignRank extends JavaPlugin{
 	private final Logger log = Logger.getLogger("Minecraft");
 	public String pluginName;
 	public PermissionHandler permissions;
+	public GroupManager gm;
+	public PermissionManager pex;
+	public WorldPermissionsManager bp;
 	private final SignRankPlayerListener playerListener = new SignRankPlayerListener(this);
 	private final SignRankBlockListener blockListener = new SignRankBlockListener(this);
 	public final SignRankPermissionsBukkit permissionsBukkit = new SignRankPermissionsBukkit();
@@ -35,19 +43,35 @@ public class SignRank extends JavaPlugin{
 		PluginDescriptionFile pdFile = this.getDescription();
 		PluginManager pm = this.getServer().getPluginManager();
 		Plugin permissionsBukkitPlugin = pm.getPlugin("PermissionsBukkit");
+		Plugin groupManagerPlugin = pm.getPlugin("GroupManager");
 		Plugin permissions3Plugin = pm.getPlugin("Permissions");
+		Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
+		Plugin bPermissionsPlugin = pm.getPlugin("bPermissions");
 		if (permissionsBukkitPlugin != null) {
 			pluginName = "PermissionsBukkit";
 			permissionsBukkit.plugin = (PermissionsPlugin) permissionsBukkitPlugin;
+		} else if (groupManagerPlugin != null) {
+			pluginName = "GroupManager";
+			gm = (GroupManager) groupManagerPlugin;
+		} else if (permissionsExPlugin != null) {
+			pluginName = "PermissionsEx";
+			pex = PermissionsEx.getPermissionManager();
+		} else if (bPermissionsPlugin != null) {
+			pluginName = "bPermissions";
+			bp = Permissions.getWorldPermissionsManager();
 		} else if (permissions3Plugin != null) {
 			if (permissions3Plugin.getDescription().getVersion().startsWith("3.") && permissions3Plugin instanceof PermissionHandler) {
 				pluginName = "Permissions3";
 				permissions = (PermissionHandler) permissions3Plugin;
 			} else {
 				log.severe("No support Permissions plugin has been found, SignRank will support itself.");
+				setEnabled(false);
+				return;
 			}
 		} else {
 			log.severe("No support Permissions plugin has been found, SignRank will support itself.");
+			setEnabled(false);
+			return;
 		}
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Event.Priority.Normal, this);
@@ -83,11 +107,11 @@ public class SignRank extends JavaPlugin{
 	public void initConfig() {
 		Configuration config = getConfiguration();
 		config.setHeader("#'signText' is the text that has to be on the first line of the sign to in order for it to be a SignRankSign.\n" +
-				"#You have to manually set the groups for every world when using Permissions3.\n" +
+				"#You have to manually set the groups for every world when using either Permissions3 or Groupmanager.\n" +
 				"#Those groups are ignored when 'bypassGroupCheck' is true, players will then be promoted to the group specified on the second line of the sign.");
 		if (config.getProperty("PermissionsBukkit.toGroup") == null) {
 			config.setProperty("PermissionsBukkit.toGroup", "user");
-			config.setProperty("Permissions3.worldName", "groupName");
+			config.setProperty("MultiWorld.worldName", "groupName");
 			config.save();
 		}
 		if (config.getProperty("signText") == null) {
@@ -125,6 +149,12 @@ public class SignRank extends JavaPlugin{
 			return permissions.has(player, "signrank.build");
 		} else if (pluginName.equals("PermissionsBukkit")) {
 			return player.hasPermission("signrank.build");
+		} else if (pluginName.equals("GroupManager")) {
+			return gm.getWorldsHolder().getWorldPermissions(player).has(player, "signrank.build");
+		} else if (pluginName.equals("PermissionsEx")) {
+			return pex.has(player, "signrank.build");
+		} else if (pluginName.equals("bPermissions")) {
+			return bp.getPermissionSet(player.getWorld()).has(player, "signrank.build");
 		} else {
 			return false;
 		}
