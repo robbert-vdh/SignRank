@@ -8,6 +8,10 @@
 
 ## Changelog:
 
+__1.2.1__
+
+> -   Finally moved to the new configuration format.
+
 __1.2__
 
 > -   Added support for the following plugins:

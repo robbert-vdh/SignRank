@@ -61,9 +61,10 @@ public class SignRank extends JavaPlugin{
 			pluginName = "bPermissions";
 			bp = Permissions.getWorldPermissionsManager();
 		} else if (permissions3Plugin != null) {
-			if (permissions3Plugin.getDescription().getVersion().startsWith("3.") && permissions3Plugin instanceof PermissionHandler) {
+			com.nijikokun.bukkit.Permissions.Permissions permissionsPlugin = (com.nijikokun.bukkit.Permissions.Permissions) permissions3Plugin;
+			if (permissions3Plugin.getDescription().getVersion().startsWith("3.") && permissionsPlugin.getHandler() instanceof PermissionHandler) {
 				pluginName = "Permissions3";
-				permissions = (PermissionHandler) permissions3Plugin;
+				permissions = permissionsPlugin.getHandler();
 			} else {
 				log.severe("No support Permissions plugin has been found, SignRank will support itself.");
 				setEnabled(false);
