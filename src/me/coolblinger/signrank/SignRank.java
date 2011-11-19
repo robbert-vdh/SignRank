@@ -7,6 +7,8 @@ import de.bananaco.permissions.worlds.WorldPermissionsManager;
 import me.coolblinger.signrank.listeners.SignRankBlockListener;
 import me.coolblinger.signrank.listeners.SignRankPlayerListener;
 import org.anjocaido.groupmanager.GroupManager;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -14,7 +16,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.config.Configuration;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
@@ -69,7 +70,7 @@ public class SignRank extends JavaPlugin{
 				return;
 			}
 		} else {
-			log.severe("No support Permissions plugin has been found, SignRank will support itself.");
+			log.severe("No supported Permissions plugin has been found, SignRank will support itself.");
 			setEnabled(false);
 			return;
 		}
@@ -105,42 +106,36 @@ public class SignRank extends JavaPlugin{
 	}
 
 	public void initConfig() {
-		Configuration config = getConfiguration();
-		config.setHeader("#'signText' is the text that has to be on the first line of the sign to in order for it to be a SignRankSign.\n" +
-				"#You have to manually set the groups for every world when using either Permissions3, Groupmanager or bPermissions.\n" +
-				"#Those groups are ignored when 'bypassGroupCheck' is true, players will then be promoted to the group specified on the second line of the sign.");
-		if (config.getProperty("PermissionsBukkit.toGroup") == null) {
-			config.setProperty("PermissionsBukkit.toGroup", "user");
-			config.setProperty("MultiWorld.worldName", "groupName");
-			config.save();
+		YamlConfiguration config = (YamlConfiguration) getConfig();
+		config.options().header("'signText' is the text that has to be on the first line of the sign to in order for it to be a SignRankSign.\n" +
+				"You have to manually set the groups for every world when using either Permissions3, Groupmanager or bPermissions.\n" +
+				"Those groups are ignored when 'bypassGroupCheck' is true, players will then be promoted to the group specified on the second line of the sign.");
+		if (config.get("PermissionsBukkit.toGroup") == null) {
+			config.set("PermissionsBukkit.toGroup", "user");
+			config.set("MultiWorld.worldName", "groupName");
 		}
-		if (config.getProperty("signText") == null) {
-			config.setProperty("signText", "[SignRank]");
-			config.save();
+		if (config.get("signText") == null) {
+			config.set("signText", "[SignRank]");
 		}
-		if (config.getProperty("bypassGroupCheck") == null) {
-			config.setProperty("bypassGroupCheck", false);
-			config.save();
+		if (config.get("bypassGroupCheck") == null) {
+			config.set("bypassGroupCheck", false);
 		}
-		if (config.getProperty("messages.rankUp") == null) {
-			config.setProperty("messages.rankUp", "You've been promoted to '%group%'.");
-			config.save();
+		if (config.get("messages.rankUp") == null) {
+			config.set("messages.rankUp", "You've been promoted to '%group%'.");
 		}
-		if (config.getProperty("messages.deny") == null) {
-			config.setProperty("messages.deny", "You're already in the '%group%' group.");
-			config.save();
+		if (config.get("messages.deny") == null) {
+			config.set("messages.deny", "You're already in the '%group%' group.");
 		}
+		saveConfig();
 	}
 
 	public String readString(String path) {
-		Configuration config = getConfiguration();
-		config.load();
+		Configuration config = getConfig();
 		return config.getString(path);
 	}
 
 	public boolean readBoolean(String path) {
-		Configuration config = getConfiguration();
-		config.load();
+		Configuration config = getConfig();
 		return config.getBoolean(path, false);
 	}
 

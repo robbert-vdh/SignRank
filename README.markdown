@@ -1,3 +1,5 @@
+# Note: This plugin does not use Maven because of the amount of required libraries
+
 ## Dependencies:
 -   Permissions3 or PermissionsBukkit
 

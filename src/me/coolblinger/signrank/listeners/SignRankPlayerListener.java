@@ -7,11 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.util.config.Configuration;
 import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 
@@ -130,8 +130,7 @@ public class SignRankPlayerListener extends PlayerListener {
 						}
 					} else if (plugin.pluginName.equals("bPermissions")) {
 						//There is no easy way to retrieve the default group.
-						Configuration c = new Configuration(new File("plugins/bPermissions/worlds/" + player.getWorld().getName() + ".yml"));
-						c.load();
+						YamlConfiguration c = YamlConfiguration.loadConfiguration(new File("plugins/bPermissions/worlds/" + player.getWorld().getName() + ".yml"));
 						String defaultGroup = c.getString("default");
 						if (plugin.readBoolean("bypassGroupCheck")) {
 							for (String group:plugin.bp.getPermissionSet(player.getWorld()).getGroups(player)) {

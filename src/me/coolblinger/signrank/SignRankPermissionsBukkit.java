@@ -8,7 +8,6 @@ public class SignRankPermissionsBukkit {
 	PermissionsPlugin plugin;
 
 	public void reloadPermissions() {
-		plugin.getConfiguration().load();
 		Class pluginClass = plugin.getClass();
 		Method[] methods = pluginClass.getDeclaredMethods();
 		for (Method method:methods) {
