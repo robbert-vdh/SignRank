@@ -11,6 +11,7 @@
 __1.2.2__
 
 > -   Fixed a stupid typo
+-   It's now compatible with the latest CraftBukkit builds
 
 __1.2.1__
 
