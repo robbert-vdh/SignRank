@@ -66,12 +66,12 @@ public class SignRank extends JavaPlugin{
 				pluginName = "Permissions3";
 				permissions = permissionsPlugin.getHandler();
 			} else {
-				log.severe("No support Permissions plugin has been found, SignRank will support itself.");
+				log.severe("No support Permissions plugin has been found, SignRank will disable itself.");
 				setEnabled(false);
 				return;
 			}
 		} else {
-			log.severe("No supported Permissions plugin has been found, SignRank will support itself.");
+			log.severe("No supported Permissions plugin has been found, SignRank will disable itself.");
 			setEnabled(false);
 			return;
 		}

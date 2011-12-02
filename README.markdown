@@ -8,6 +8,10 @@
 
 ## Changelog:
 
+__1.2.2__
+
+> -   Fixed a stupid typo
+
 __1.2.1__
 
 > -   Finally moved to the new configuration format
